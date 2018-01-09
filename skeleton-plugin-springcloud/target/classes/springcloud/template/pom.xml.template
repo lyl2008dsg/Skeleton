@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <groupId>${pomGroupId}</groupId>
+    <artifactId>${pomArtifactId}</artifactId>
+    <name>${pomName}</name>
+    <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <version>${pomVersion}</version>
+    <url>https://github.com/Nepxion/</url>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>${springBootVersion}</version>
+    </parent>
+
+    <modules>
+        <module>${moduleName}-eureka</module>
+        <module>${moduleName}-server</module>
+        <module>${moduleName}-client</module>
+    </modules>
+
+    <properties>
+        <spring.cloud.version>${springCloudVersion}</spring.cloud.version>
+        <java.version>${javaVersion}</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${r"$"}{project.groupId}</groupId>
+                <artifactId>${moduleName}-eureka</artifactId>
+                <version>${r"$"}{project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${r"$"}{project.groupId}</groupId>
+                <artifactId>${moduleName}-server</artifactId>
+                <version>${r"$"}{project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${r"$"}{project.groupId}</groupId>
+                <artifactId>${moduleName}-client</artifactId>
+                <version>${r"$"}{project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${r"$"}{spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>${r"$"}{project.build.sourceEncoding}</encoding>
+                    <source>${r"$"}{java.version}</source>
+                    <target>${r"$"}{java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,52 @@
+echo 'on'
+echo '============================================================='
+echo '$                                                           $'
+echo '$                      Nepxion Skeleton                     $'
+echo '$                                                           $'
+echo '$                                                           $'
+echo '$                                                           $'
+echo '$  Nepxion Technologies All Right Reserved                  $'
+echo '$  Copyright(C) 2017                                        $'
+echo '$                                                           $'
+echo '============================================================='
+echo '.'
+echo 'off'
+
+title=Nepxion Skeleton [${imageName}]
+color=0a
+
+PROJECT_NAME=${projectName}
+
+DOCKER_HOST=${dockerHost}
+<#if dockerCertEnabled != "true"># </#if>DOCKER_CERT_PATH=${dockerCertPath}
+IMAGE_NAME=${imageName}
+MACHINE_PORT=${port}
+CONTAINER_PORT=${port}
+<#if dockerType != "Interaction Container"># </#if>RUN_MODE=-i -t
+<#if dockerType != "Daemon Container"># </#if>RUN_MODE=-d
+<#if linkDocker != "">
+LINK_CONTAINER=${linkDocker}
+</#if>
+
+if [ ! -d ${r"$"}{PROJECT_NAME}/target];then
+rmdir /s/q ${r"$"}{PROJECT_NAME}/target
+fi
+
+# 执行相关模块的Maven Install
+mvn clean install -DskipTests -pl ${r"$"}{PROJECT_NAME} -am
+
+# 停止和删除Docker容器
+docker stop ${r"$"}{IMAGE_NAME}
+# docker kill ${r"$"}{IMAGE_NAME}
+docker rm ${r"$"}{IMAGE_NAME}
+
+# 删除Docker镜像
+docker rmi ${r"$"}{IMAGE_NAME}
+
+cd ${r"$"}{PROJECT_NAME}
+
+# 安装Docker镜像
+mvn package docker:build -DskipTests -DImageName=${r"$"}{IMAGE_NAME} -DExposePort=${r"$"}{CONTAINER_PORT}
+
+# 安装和启动Docker容器，并自动执行端口映射
+docker run ${r"$"}{RUN_MODE} -p ${r"$"}{MACHINE_PORT}:${r"$"}{CONTAINER_PORT} -h ${r"$"}{IMAGE_NAME}<#if linkDocker != ""> --link ${r"$"}{LINK_CONTAINER}:${r"$"}{LINK_CONTAINER}</#if> --name ${r"$"}{IMAGE_NAME} ${r"$"}{IMAGE_NAME}:latest
